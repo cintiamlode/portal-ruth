@@ -374,7 +374,7 @@ const loadSession=()=>{try{const t=+sessionStorage.getItem('ca_t')||0;if(Date.no
 // ══ API via servidor proxy ══
 async function api(path,params={}){
   const q=new URLSearchParams(params).toString();
-  const url=`${SERVER}/api/${path}${q?'?'+q:''}`;
+  const url=`${SERVER}/${path}${q?'?'+q:''}`;
   dbg('GET /api/'+path+(q?'?'+q.substring(0,60):''));
   let r=await fetch(url,{headers:{'Authorization':'Bearer '+AT}});
   if(r.status===401){await renovar();r=await fetch(url,{headers:{'Authorization':'Bearer '+AT}});}
@@ -385,15 +385,17 @@ async function api(path,params={}){
 async function buscarMes(tipo,ym,usePag,centroId){
   const ini=ym+'-01';const[y,m]=[+ym.split('-')[0],+ym.split('-')[1]];
   const fim=ym+'-'+new Date(y,m,0).getDate().toString().padStart(2,'0');
-  const ep=tipo==='r'?'financeiro/eventos-financeiros/contas-a-receber/buscar':'financeiro/eventos-financeiros/contas-a-pagar/buscar';
+  const ep=tipo==='r'?'lancamentos/receitas':'lancamentos/despesas';
   const campo=usePag?'Pagamento':'Competencia';
-  const p={[`dataInicio${campo}`]:ini,[`dataFim${campo}`]:fim,tamanhoPagina:500,pagina:0};
+  const p={[`dataInicio${campo}`]:ini,[`dataFim${campo}`]:fim,
+            dataInicioVencimento:ini,dataFimVencimento:fim,
+            tamanhoPagina:500,pagina:0};
   if(centroId) p.centroDeCustoId=centroId;
-  const variantes=[{...p},{...p,[`dataInicio${usePag?'Competencia':'Pagamento'}`]:ini,[`dataFim${usePag?'Competencia':'Pagamento'}`]:fim}];
-  delete variantes[1][`dataInicio${campo}`];delete variantes[1][`dataFim${campo}`];
-  for(const par of variantes){
-    try{const d=await api(ep,par);const it=arr(d);if(it.length>0){dbg(` ${tipo}/${ym}=${it.length}`);return it;}}catch(e){dbg(' v:'+e.message);}
-  }
+  try{
+    const d=await api(ep,p);const it=arr(d);
+    dbg(` ${tipo}/${ym}=${it.length}`);
+    if(it.length>0) return it;
+  }catch(e){dbg(' err:'+e.message);}
   return[];
 }
 
@@ -414,10 +416,10 @@ function filtrarEmpresa(items){
 
 async function buscarCentros(){
   try{
-    const d=await api('centro-de-custo',{status:'ATIVO',tamanhoPagina:200,pagina:0});
+    const d=await api('centros',{status:'ATIVO',tamanhoPagina:200,pagina:0});
     const it=arr(d);dbg('centros:'+it.length);
     if(it.length>0) return it;
-    const d2=await api('centro-de-custo',{tamanhoPagina:200,pagina:0});
+    const d2=await api('centros',{tamanhoPagina:200,pagina:0});
     return arr(d2);
   }catch(e){dbg('centros err:'+e.message);return[];}
 }
