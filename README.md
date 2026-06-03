@@ -1,2 +1,3 @@
 # portal-ruth
-Portal financeiro Ruth Cleto - C2B Contabilidade
+Portal Financeiro - C2B Contabilidade
+D'Magrella e Oguerruba - Ruth Cleto
