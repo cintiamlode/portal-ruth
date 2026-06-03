@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Financeiro · Ruth Cleto</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05120a;
+  --bg2: #0a1f14;
+  --bg3: #0f2b1c;
+  --green: #00b050;
+  --cyan: #00b8d4;
+  --glow: #00e5a0;
+  --text: #e8f5ee;
+  --muted: #6b9e7e;
+  --border: rgba(0,176,80,0.15);
+  --border2: rgba(0,184,212,0.2);
+  --red: #ff5e57;
+  --amber: #f7c948;
+  --radius: 12px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* grid background subtle */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,176,80,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,176,80,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5,18,10,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-symbol {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.logo-symbol .c1 {
+  position: absolute;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--green);
+  top: 6px; left: 2px;
+}
+
+.logo-symbol .c2 {
+  position: absolute;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--cyan);
+  opacity: 0.9;
+  top: 6px; left: 10px;
+  mix-blend-mode: screen;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-text .brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.logo-text .sub {
+  font-size: 10px;
+  color: var(--glow);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.periodo-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg2);
+}
+
+select.mes-select {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  color: var(--cyan);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── NAV TABS ── */
+nav {
+  padding: 1.5rem 2rem 0;
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid transparent;
+  border-bottom: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  background: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.tab:hover { color: var(--text); background: rgba(0,176,80,0.05); }
+
+.tab.active {
+  color: var(--glow);
+  border-color: var(--border);
+  border-bottom: 1px solid var(--bg);
+  background: var(--bg);
+  margin-bottom: -1px;
+}
+
+/* ── MAIN ── */
+main {
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── SECTION TITLE ── */
+.section-header {
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.section-header p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── KPI CARDS ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+}
+
+.kpi.cyan::before { background: var(--cyan); }
+.kpi.amber::before { background: var(--amber); }
+.kpi.red::before { background: var(--red); }
+.kpi.glow::before { background: var(--glow); }
+
+.kpi:hover { border-color: rgba(0,176,80,0.3); }
+
+.kpi-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.kpi-value.positive { color: var(--glow); }
+.kpi-value.negative { color: var(--red); }
+
+.kpi-delta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.kpi-delta.up { color: var(--green); }
+.kpi-delta.down { color: var(--red); }
+
+/* ── TABLE ── */
+.table-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.table-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-header h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(0,229,160,0.1);
+  color: var(--glow);
+  border: 1px solid rgba(0,229,160,0.2);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 10px 1.5rem;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  text-align: left;
+  background: rgba(0,0,0,0.2);
+}
+
+th.num { text-align: right; }
+
+td {
+  padding: 12px 1.5rem;
+  font-size: 13px;
+  border-top: 1px solid rgba(0,176,80,0.06);
+  color: var(--text);
+}
+
+td.num {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}
+
+td.pos { color: var(--glow); }
+td.neg { color: var(--red); }
+td.neutral { color: var(--muted); }
+
+tr.total-row td {
+  background: rgba(0,176,80,0.06);
+  font-weight: 500;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  border-top: 1px solid rgba(0,176,80,0.2);
+}
+
+tr:hover td { background: rgba(0,176,80,0.04); }
+
+/* ── CHART BAR ── */
+.chart-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 90px;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  background: rgba(0,176,80,0.08);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--green), var(--glow));
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bar-fill.neg-fill {
+  background: linear-gradient(90deg, #992200, var(--red));
+}
+
+.bar-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* ── EVENT FILTER ── */
+.event-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.ev-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.ev-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.ev-btn.active {
+  background: rgba(0,184,212,0.1);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ── DOIS COLUNAS ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .two-col { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 100px 1fr 70px; }
+  nav { padding: 1rem 1rem 0; }
+  header { padding: 0 1rem; }
+  main { padding: 1rem; }
+  .tab { padding: 8px 12px; font-size: 12px; }
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 11px;
+  color: rgba(107,158,126,0.5);
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── SALDO ACUMULADO LINE ── */
+.saldo-line {
+  padding: 1rem 1.5rem;
+  background: rgba(0,0,0,0.2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.saldo-line span { font-size: 12px; color: var(--muted); }
+.saldo-line strong {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+}
+
+/* watermark */
+.watermark {
+  font-size: 10px;
+  color: rgba(0,229,160,0.3);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-symbol">
+      <div class="c1"></div>
+      <div class="c2"></div>
+    </div>
+    <div class="logo-text">
+      <span class="brand">C2B</span>
+      <span class="sub">Contabilidade</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <select class="mes-select" id="mesSelect" onchange="setMes(this.value)">
+      <option value="Jan">Janeiro 2025</option>
+      <option value="Fev">Fevereiro 2025</option>
+      <option value="Mar">Março 2025</option>
+      <option value="Abr">Abril 2025</option>
+      <option value="Mai" selected>Maio 2025</option>
+    </select>
+    <span class="watermark">RUTH CLETO</span>
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="showPanel('fcx', this)">Fluxo de Caixa</button>
+  <button class="tab" onclick="showPanel('dre', this)">DRE</button>
+  <button class="tab" onclick="showPanel('eventos', this)">DRE por Evento</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAINEL FCX -->
+<div class="panel active" id="panel-fcx">
+  <div class="section-header">
+    <h2>Fluxo de Caixa · <span style="color:var(--cyan)">Maio 2025</span></h2>
+    <p>Movimentações financeiras do período — entradas, saídas e saldo projetado</p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Total de Entradas</div>
+      <div class="kpi-value positive" id="fcx-entradas">R$ 0</div>
+      <div class="kpi-delta up" id="fcx-entradas-delta">↑ vs. mês anterior</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="kpi-label">Total de Saídas</div>
+      <div class="kpi-value negative" id="fcx-saidas">R$ 0</div>
+      <div class="kpi-delta down" id="fcx-saidas-delta">↓ vs. mês anterior</div>
+    </div>
+    <div class="kpi glow">
+      <div class="kpi-label">Saldo do Período</div>
+      <div class="kpi-value positive" id="fcx-saldo">R$ 0</div>
+      <div class="kpi-delta" id="fcx-saldo-label">resultado líquido</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Margem de Caixa</div>
+      <div class="kpi-value" id="fcx-margem">0%</div>
+      <div class="kpi-delta">entradas aproveitadas</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Entradas</h3>
+        <span class="badge" id="badge-entradas">0 lançamentos</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th class="num">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-entradas"></tbody>
+        <tfoot><tr class="total-row"><td>Total Entradas</td><td class="num pos" id="total-entradas">R$ 0,00</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Saídas</h3>
+        <span class="badge" style="background:rgba(255,94,87,0.1);color:var(--red);border-color:rgba(255,94,87,0.2)" id="badge-saidas">0 lançamentos</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th class="num">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-saidas"></tbody>
+        <tfoot><tr class="total-row"><td>Total Saídas</td><td class="num neg" id="total-saidas">R$ 0,00</td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Composição das Saídas por Categoria</div>
+    <div class="bar-chart" id="bar-saidas"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAINEL DRE -->
+<div class="panel" id="panel-dre">
+  <div class="section-header">
+    <h2>DRE · <span style="color:var(--cyan)">Maio 2025</span></h2>
+    <p>Demonstrativo de Resultado do Exercício — visão gerencial do período</p>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Receita Bruta</div>
+      <div class="kpi-value" id="dre-bruta">R$ 0</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="kpi-label">Receita Líquida</div>
+      <div class="kpi-value" id="dre-liquida">R$ 0</div>
+    </div>
+    <div class="kpi glow">
+      <div class="kpi-label">Lucro Bruto</div>
+      <div class="kpi-value positive" id="dre-lucro-bruto">R$ 0</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Resultado Líquido</div>
+      <div class="kpi-value positive" id="dre-resultado">R$ 0</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>DRE Detalhada</h3>
+      <span class="badge">Competência</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Conta</th>
+          <th class="num">Valor</th>
+          <th class="num">% Receita</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-dre"></tbody>
+    </table>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Distribuição da Receita</div>
+    <div class="bar-chart" id="bar-dre"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAINEL EVENTOS -->
+<div class="panel" id="panel-eventos">
+  <div class="section-header">
+    <h2>DRE por Evento · <span style="color:var(--cyan)">2025</span></h2>
+    <p>Resultado individual por evento — selecione para ver o detalhamento</p>
+  </div>
+
+  <div class="event-filter" id="event-filter"></div>
+
+  <div class="kpi-grid" id="kpi-evento"></div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3 id="ev-titulo">Selecione um evento</h3>
+      <span class="badge" id="ev-badge">—</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Descrição</th>
+          <th class="num">Valor</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-evento"></tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="2">Resultado do Evento</td>
+          <td class="num" id="resultado-evento">—</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="saldo-line">
+      <span id="ev-info">Selecione um evento acima para ver o detalhamento completo.</span>
+      <strong id="ev-margem" style="color:var(--glow)">—</strong>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Resultado por Evento (comparativo)</div>
+    <div class="bar-chart" id="bar-eventos"></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div>Portal Financeiro · Ruth Cleto &nbsp;·&nbsp; Gestão C2B Contabilidade e Finanças</div>
+  <div style="margin-top:4px">Dados do fechamento mensal · Atualizado por Cintia</div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+// DADOS — edite aqui para atualizar o portal
+// ══════════════════════════════════════════
+
+const dados = {
+  Mai: {
+    fcx: {
+      entradas: [
+        { desc: 'Cachê — Casamento Fernanda & Lucas', valor: 8500 },
+        { desc: 'Cachê — Aniversário 50 anos Maria', valor: 4200 },
+        { desc: 'Cachê — Evento Corporativo TechCorp', valor: 6800 },
+        { desc: 'Adiantamento — Casamento Julho', valor: 3000 },
+      ],
+      saidas: [
+        { desc: 'Fornecedor — Buffet Delicias', valor: 4200, cat: 'Alimentação' },
+        { desc: 'Fornecedor — Flores & Decor', valor: 1800, cat: 'Decoração' },
+        { desc: 'Fornecedor — Som e Iluminação', valor: 2200, cat: 'Audiovisual' },
+        { desc: 'Freelancer — Fotografia', valor: 1500, cat: 'Equipe' },
+        { desc: 'Freelancer — Assessoria', valor: 800, cat: 'Equipe' },
+        { desc: 'Marketing e divulgação', valor: 650, cat: 'Marketing' },
+        { desc: 'Impostos e taxas', valor: 1240, cat: 'Fiscal' },
+        { desc: 'Despesas administrativas', valor: 380, cat: 'Administrativo' },
+      ],
+      delta_e: '+12%', delta_s: '+8%'
+    },
+    dre: [
+      { conta: '(+) Receita Bruta', valor: 22500, tipo: 'pos', nivel: 0 },
+      { conta: '(-) Deduções / Impostos', valor: -1800, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Receita Líquida', valor: 20700, tipo: 'total', nivel: 0 },
+      { conta: '(-) Custos de Produção', valor: -8200, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Lucro Bruto', valor: 12500, tipo: 'total', nivel: 0 },
+      { conta: '(-) Despesas Operacionais', valor: -3250, tipo: 'neg', nivel: 1 },
+      { conta: '    Equipe / Freelancers', valor: -2300, tipo: 'neg', nivel: 2 },
+      { conta: '    Marketing', valor: -650, tipo: 'neg', nivel: 2 },
+      { conta: '    Administrativo', valor: -300, tipo: 'neg', nivel: 2 },
+      { conta: '(=) EBITDA', valor: 9250, tipo: 'total', nivel: 0 },
+      { conta: '(-) Depreciação / Outros', valor: -420, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Resultado Líquido', valor: 8830, tipo: 'total destaque', nivel: 0 },
+    ]
+  },
+  Abr: {
+    fcx: {
+      entradas: [
+        { desc: 'Cachê — Casamento Roberta & Paulo', valor: 7800 },
+        { desc: 'Cachê — Debutante Ana Clara', valor: 3500 },
+        { desc: 'Saldo de contrato antigo', valor: 1200 },
+      ],
+      saidas: [
+        { desc: 'Fornecedor — Buffet', valor: 3800, cat: 'Alimentação' },
+        { desc: 'Decoração floral', valor: 1600, cat: 'Decoração' },
+        { desc: 'Audiovisual', valor: 1900, cat: 'Audiovisual' },
+        { desc: 'Freelancers', valor: 2100, cat: 'Equipe' },
+        { desc: 'Impostos', valor: 980, cat: 'Fiscal' },
+      ],
+      delta_e: '+5%', delta_s: '+3%'
+    },
+    dre: [
+      { conta: '(+) Receita Bruta', valor: 12500, tipo: 'pos', nivel: 0 },
+      { conta: '(-) Deduções / Impostos', valor: -1000, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Receita Líquida', valor: 11500, tipo: 'total', nivel: 0 },
+      { conta: '(-) Custos de Produção', valor: -5300, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Lucro Bruto', valor: 6200, tipo: 'total', nivel: 0 },
+      { conta: '(-) Despesas Operacionais', valor: -2100, tipo: 'neg', nivel: 1 },
+      { conta: '(=) Resultado Líquido', valor: 4100, tipo: 'total destaque', nivel: 0 },
+    ]
+  }
+};
+
+// Fallback para meses sem dados
+['Jan','Fev','Mar'].forEach(m => {
+  if (!dados[m]) dados[m] = dados.Abr;
+});
+
+// Eventos (fixos — não dependem do mês)
+const eventos = [
+  {
+    nome: 'Casamento Fernanda & Lucas',
+    data: '10/05/2025',
+    itens: [
+      { cat: 'Receita', desc: 'Cachê contratado', valor: 8500 },
+      { cat: 'Receita', desc: 'Taxa extra iluminação', valor: 600 },
+      { cat: 'Custo', desc: 'Buffet', valor: -3200 },
+      { cat: 'Custo', desc: 'Decoração', valor: -1100 },
+      { cat: 'Custo', desc: 'Audiovisual', valor: -1400 },
+      { cat: 'Equipe', desc: 'Assessoria dia', valor: -800 },
+      { cat: 'Equipe', desc: 'Fotógrafo', valor: -1500 },
+    ]
+  },
+  {
+    nome: 'Aniversário 50 anos Maria',
+    data: '17/05/2025',
+    itens: [
+      { cat: 'Receita', desc: 'Cachê', valor: 4200 },
+      { cat: 'Custo', desc: 'Buffet jantar', valor: -1800 },
+      { cat: 'Custo', desc: 'Decoração temática', valor: -700 },
+      { cat: 'Custo', desc: 'DJ', valor: -900 },
+      { cat: 'Equipe', desc: 'Assessoria', valor: -600 },
+    ]
+  },
+  {
+    nome: 'Evento Corporativo TechCorp',
+    data: '23/05/2025',
+    itens: [
+      { cat: 'Receita', desc: 'Cachê corporativo', valor: 6800 },
+      { cat: 'Custo', desc: 'Coffe break / refeições', valor: -2400 },
+      { cat: 'Custo', desc: 'Audiovisual / transmissão', valor: -1800 },
+      { cat: 'Custo', desc: 'Impressos e materiais', valor: -420 },
+      { cat: 'Equipe', desc: 'Coordenação', valor: -1100 },
+    ]
+  },
+  {
+    nome: 'Debutante Ana (Abr)',
+    data: '06/04/2025',
+    itens: [
+      { cat: 'Receita', desc: 'Pacote debutante', valor: 3500 },
+      { cat: 'Custo', desc: 'Decoração salão', valor: -900 },
+      { cat: 'Custo', desc: 'Buffet', valor: -1100 },
+      { cat: 'Equipe', desc: 'Assessoria', valor: -500 },
+    ]
+  },
+];
+
+// ══════════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════════
+function fmt(v) {
+  return 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtSigned(v) {
+  const s = v >= 0 ? '' : '-';
+  return s + fmt(v);
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// FCX
+// ══════════════════════════════════════════
+function renderFCX(mes) {
+  const d = dados[mes];
+  if (!d) return;
+  const { entradas, saidas, delta_e, delta_s } = d.fcx;
+
+  const totE = entradas.reduce((a,x)=>a+x.valor,0);
+  const totS = saidas.reduce((a,x)=>a+x.valor,0);
+  const saldo = totE - totS;
+  const margem = Math.round((saldo / totE) * 100);
+
+  document.getElementById('fcx-entradas').textContent = fmt(totE);
+  document.getElementById('fcx-saidas').textContent = fmt(totS);
+  document.getElementById('fcx-saldo').textContent = fmt(saldo);
+  document.getElementById('fcx-margem').textContent = margem + '%';
+  document.getElementById('fcx-entradas-delta').textContent = '↑ ' + delta_e + ' vs. mês anterior';
+  document.getElementById('fcx-saidas-delta').textContent = '↑ ' + delta_s + ' vs. mês anterior';
+
+  // tabela entradas
+  const tbE = document.getElementById('tbody-entradas');
+  tbE.innerHTML = entradas.map(e =>
+    `<tr><td>${e.desc}</td><td class="num pos">${fmt(e.valor)}</td></tr>`
+  ).join('');
+  document.getElementById('total-entradas').textContent = fmt(totE);
+  document.getElementById('badge-entradas').textContent = entradas.length + ' lançamentos';
+
+  // tabela saidas
+  const tbS = document.getElementById('tbody-saidas');
+  tbS.innerHTML = saidas.map(s =>
+    `<tr><td>${s.desc}</td><td class="num neg">${fmt(s.valor)}</td></tr>`
+  ).join('');
+  document.getElementById('total-saidas').textContent = fmt(totS);
+  document.getElementById('badge-saidas').textContent = saidas.length + ' lançamentos';
+
+  // gráfico categorias
+  const cats = {};
+  saidas.forEach(s => {
+    cats[s.cat] = (cats[s.cat] || 0) + s.valor;
+  });
+  const maxCat = Math.max(...Object.values(cats));
+  const barSaidas = document.getElementById('bar-saidas');
+  barSaidas.innerHTML = Object.entries(cats)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([cat,val]) => `
+      <div class="bar-row">
+        <span class="bar-label">${cat}</span>
+        <div class="bar-track">
+          <div class="bar-fill neg-fill" style="width:${Math.round((val/maxCat)*100)}%"></div>
+        </div>
+        <span class="bar-val neg">${fmt(val)}</span>
+      </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// DRE
+// ══════════════════════════════════════════
+function renderDRE(mes) {
+  const d = dados[mes];
+  if (!d) return;
+  const itens = d.dre;
+
+  const bruta = itens.find(i=>i.conta.includes('Receita Bruta'))?.valor || 0;
+  const liq = itens.find(i=>i.conta.includes('Receita Líquida'))?.valor || 0;
+  const lbruto = itens.find(i=>i.conta.includes('Lucro Bruto'))?.valor || 0;
+  const res = itens.find(i=>i.tipo.includes('destaque'))?.valor || 0;
+
+  document.getElementById('dre-bruta').textContent = fmt(bruta);
+  document.getElementById('dre-liquida').textContent = fmt(liq);
+  document.getElementById('dre-lucro-bruto').textContent = fmt(lbruto);
+  document.getElementById('dre-resultado').textContent = fmt(res);
+
+  const tb = document.getElementById('tbody-dre');
+  tb.innerHTML = itens.map(i => {
+    const cls = i.tipo.includes('destaque') ? 'num pos' : i.tipo === 'pos' ? 'num pos' : i.tipo === 'neg' ? 'num neg' : 'num neutral';
+    const pct = bruta ? Math.round((i.valor / bruta) * 100) : 0;
+    const style = i.tipo.includes('total') ? 'font-weight:500' : '';
+    const pl = i.nivel === 2 ? 'padding-left:2.5rem' : i.nivel === 1 ? 'padding-left:1.5rem' : '';
+    return `<tr>
+      <td style="${style};${pl}">${i.conta}</td>
+      <td class="${cls}" style="${style}">${fmtSigned(i.valor)}</td>
+      <td class="num neutral" style="${style}">${pct}%</td>
+    </tr>`;
+  }).join('');
+
+  // gráfico DRE
+  const positivos = itens.filter(i=>i.valor>0 && i.nivel===0);
+  const maxV = Math.max(...positivos.map(i=>i.valor));
+  document.getElementById('bar-dre').innerHTML = positivos.map(i=>`
+    <div class="bar-row">
+      <span class="bar-label">${i.conta.replace('(=) ','').replace('(+) ','')}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round((i.valor/maxV)*100)}%"></div>
+      </div>
+      <span class="bar-val pos">${fmt(i.valor)}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// EVENTOS
+// ══════════════════════════════════════════
+let eventoAtivo = 0;
+
+function renderEventos() {
+  const filter = document.getElementById('event-filter');
+  filter.innerHTML = eventos.map((ev,i) => `
+    <button class="ev-btn ${i===eventoAtivo?'active':''}" onclick="selectEvento(${i})">${ev.nome}</button>
+  `).join('');
+
+  selectEvento(eventoAtivo);
+
+  // gráfico comparativo
+  const resultados = eventos.map(ev => {
+    const receita = ev.itens.filter(x=>x.valor>0).reduce((a,x)=>a+x.valor,0);
+    const custo = ev.itens.filter(x=>x.valor<0).reduce((a,x)=>a+x.valor,0);
+    return { nome: ev.nome.split(' ').slice(0,2).join(' '), resultado: receita + custo };
+  });
+  const maxR = Math.max(...resultados.map(r=>Math.abs(r.resultado)));
+  document.getElementById('bar-eventos').innerHTML = resultados.map(r => {
+    const pct = Math.round((Math.abs(r.resultado)/maxR)*100);
+    const pos = r.resultado >= 0;
+    return `
+      <div class="bar-row">
+        <span class="bar-label">${r.nome}</span>
+        <div class="bar-track">
+          <div class="bar-fill ${pos?'':'neg-fill'}" style="width:${pct}%"></div>
+        </div>
+        <span class="bar-val ${pos?'pos':'neg'}">${fmt(r.resultado)}</span>
+      </div>`;
+  }).join('');
+}
+
+function selectEvento(idx) {
+  eventoAtivo = idx;
+  const ev = eventos[idx];
+
+  // atualizar botões
+  document.querySelectorAll('.ev-btn').forEach((b,i) => {
+    b.classList.toggle('active', i===idx);
+  });
+
+  const receita = ev.itens.filter(x=>x.valor>0).reduce((a,x)=>a+x.valor,0);
+  const custo = ev.itens.filter(x=>x.valor<0).reduce((a,x)=>a+x.valor,0);
+  const resultado = receita + custo;
+  const margem = Math.round((resultado/receita)*100);
+
+  document.getElementById('ev-titulo').textContent = ev.nome;
+  document.getElementById('ev-badge').textContent = ev.data;
+
+  document.getElementById('kpi-evento').innerHTML = `
+    <div class="kpi">
+      <div class="kpi-label">Receita do Evento</div>
+      <div class="kpi-value positive">${fmt(receita)}</div>
+    </div>
+    <div class="kpi cyan">
+      <div class="kpi-label">Custos Totais</div>
+      <div class="kpi-value negative">${fmt(Math.abs(custo))}</div>
+    </div>
+    <div class="kpi glow">
+      <div class="kpi-label">Resultado</div>
+      <div class="kpi-value ${resultado>=0?'positive':'negative'}">${fmt(resultado)}</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Margem</div>
+      <div class="kpi-value">${margem}%</div>
+    </div>
+  `;
+
+  const tb = document.getElementById('tbody-evento');
+  tb.innerHTML = ev.itens.map(it => `
+    <tr>
+      <td><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${it.cat==='Receita'?'rgba(0,229,160,0.1)':'rgba(255,94,87,0.1)'};color:${it.cat==='Receita'?'var(--glow)':'var(--red)'}">${it.cat}</span></td>
+      <td>${it.desc}</td>
+      <td class="num ${it.valor>=0?'pos':'neg'}">${fmtSigned(it.valor)}</td>
+    </tr>`).join('');
+
+  const resEl = document.getElementById('resultado-evento');
+  resEl.textContent = fmtSigned(resultado);
+  resEl.className = 'num ' + (resultado>=0?'pos':'neg');
+
+  document.getElementById('ev-info').textContent = `${ev.itens.length} lançamentos registrados · ${ev.data}`;
+  document.getElementById('ev-margem').textContent = `Margem ${margem}%`;
+}
+
+// ══════════════════════════════════════════
+// TROCA DE MÊS
+// ══════════════════════════════════════════
+function setMes(mes) {
+  renderFCX(mes);
+  renderDRE(mes);
+  document.querySelectorAll('h2 span').forEach(el => {
+    const nomes = {Jan:'Janeiro',Fev:'Fevereiro',Mar:'Março',Abr:'Abril',Mai:'Maio'};
+    if (!el.closest('#panel-eventos')) el.textContent = (nomes[mes]||mes) + ' 2025';
+  });
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderFCX('Mai');
+renderDRE('Mai');
+renderEventos();
+</script>
+</body>
+</html>
